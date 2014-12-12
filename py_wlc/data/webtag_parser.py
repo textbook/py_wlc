@@ -41,7 +41,8 @@ class WebTagParser(object):
     LOCATIONS = {"discount_rate": ("A1.1.1", 24, 1, 3),
                  "rail_diesel_price": ("A1.3.7", 27, 1, 5),
                  "rail_electricity_price": ("A1.3.7", 27, 1, 7),
-                 "rail_fuel_duty": ("A1.3.7", 27, 1, 10)}
+                 "rail_fuel_duty": ("A1.3.7", 27, 1, 10),
+                 "gdp_growth": ("Annual Parameters", 30, 1, 5)}
 
     def __init__(self, filename):
         self.filename = filename
