@@ -1,4 +1,4 @@
-"""Exposes the latest WebTAG data as py_wlc objects."""
+"""Exposes the parsed WebTAG data as :py:mod:`py_wlc` objects."""
 import datetime
 import json
 import logging
@@ -24,19 +24,19 @@ class WebTagData(object):
         self.discount = self._parse_discount(data.get("discount_rate"))
 
     def _parse_discount(self, data):
-        """Parse the discount data from WebTAG into a Discount.
+        """Parse the discount data from WebTAG into a ``Discount``.
 
         Notes:
           Assumes that all years will be in dash-separated or space-
           separated format, with the first part being the start year.
 
         Arguments:
-          data (dict): The dictionary of discount rate data (or None
-            if not present - this will produce a Discount with the
-            default rates).
+          data (dict): The dictionary of discount rate data (or
+            ``None`` if not present - this will produce a
+            :py:class:`~.Discount` with the default rates).
 
         Returns:
-          py_wlc.Discount: The new Discount object.
+          :py:class:`~.Discount`: The new Discount object.
 
         """
         if data is not None:
@@ -55,14 +55,14 @@ class WebTagData(object):
         return Discount(self.base_year)
 
     @classmethod
-    def latest_json(cls, dir):
+    def from_latest_json(cls, dir):
         """Extract data from the most recent JSON in the directory.
 
         Arguments:
           dir (str): The directory to start from.
 
         Returns:
-          WebTagData: A new class instance.
+          :py:class:`~.WebTagData`: A new class instance.
 
         """
         latest_data = latest_date = None
@@ -86,7 +86,7 @@ class WebTagData(object):
           file (str): The file to import from.
 
         Returns:
-          WebTagData: A new class instance.
+          :py:class:`~.WebTagData`: A new class instance.
 
         """
         with open(file) as f:

@@ -1,5 +1,10 @@
 #! /usr/bin/env python
-"""WebTAG Parser - functionality for extracting from the Data Book."""
+"""WebTAG Parser - functionality for extracting from the Data Book.
+
+This class parses the databook to a more convenient JSON format for
+use by :py:class:`~.WebTagData`.
+
+"""
 import argparse
 import datetime
 import json
@@ -14,24 +19,18 @@ class WebTagParser(object):
     The class is designed to operate as a context manager if needed.
 
     Notes:
-      Where possible, the workbook is opened in "on_demand" mode, to
-      avoid loading all worksheets at once. _extract_data will load
-      and unload the appropriate worksheet as required.
+      Where possible, the workbook is opened in ``on_demand`` mode, to
+      avoid loading all worksheets at once. :py:meth:`extract_data`
+      will load and unload the appropriate worksheet as required.
 
     Arguments:
-      filename (str): The WebTAG Databook file to open.
+      filename (``str``): The WebTAG Databook file to open.
 
     Attributes:
-      book (xlrd.Workbook): The Excel workbook.
-      date (datetime.datetime): The release date of the databook.
-      filename (str): The name of the file to open.
-      version (str): The version of the databook.
-
-      CHECK (tuple): Defines the test for a valid WebTAG workbook
-        (sheet name, row, column and expected value).
-      DATE (tuple): Defines the location to look for the release date
-        (sheet name, version column, date column).
-      LOCATIONS (dict of str: tuple): The pre-defined data locations.
+      book (``xlrd.Workbook``): The Excel workbook.
+      date (``datetime.datetime``): The release date of the databook.
+      filename (``str``): The name of the file to open.
+      version (``str``): The version of the databook.
 
     """
 
@@ -62,15 +61,15 @@ class WebTagParser(object):
         """Extract the base year from the appropriate worksheet.
 
         Arguments:
-          sheet_name (str): The worksheet from which to extract the
-            base year.
-          label_col (int): The column in which to find the label.
-          base_col (int): The column from which to extract the base
+          sheet_name (``str``): The worksheet from which to extract
+            the base year.
+          label_col (``int``): The column in which to find the label.
+          base_col (``int``): The column from which to extract the base
             year.
-          label (str): The label to find in label_col.
+          label (``str``): The label to find in ``label_col``.
 
         Returns:
-          int: The base year for the data in the workbook.
+          ``int``: The base year for the data in the workbook.
 
         """
         sheet = self.book.sheet_by_name(sheet_name)
@@ -87,13 +86,15 @@ class WebTagParser(object):
           as the version appears in version_col.
 
         Arguments:
-          date_col (int): The column from which to extract the date.
-          sheet_name (str): The worksheet from which to extract the
+          date_col (``int``): The column from which to extract the
             date.
-          version_col (int): The column in which to find the version.
+          sheet_name (``str``): The worksheet from which to extract the
+            date.
+          version_col (``int``): The column in which to find the
+            version.
 
         Returns:
-          datetime.date: The release date of the workbook.
+          ``datetime.date``: The release date of the workbook.
 
         """
         sheet = self.book.sheet_by_name(sheet_name)
@@ -110,11 +111,11 @@ class WebTagParser(object):
         self.book.release_resources()
 
     def close(self):
-        """Close the file if not being used as context manager."""
+        """Close the file release the :py:attr:`book` resources."""
         self.__exit__()
 
     def extract_all(self, verbose=False):
-        """Extract all defined data from LOCATIONS and metadata."""
+        """Extract all data from ``LOCATIONS`` and useful metadata."""
         data = {}
         for name in self.LOCATIONS:
             if verbose:
@@ -143,12 +144,12 @@ class WebTagParser(object):
         return data
 
     def extract_named_data(self, name):
-        """Extract a named data series from LOCATIONS."""
+        """Extract a named data series from ``LOCATIONS``."""
         return self.extract_data(*self.LOCATIONS[name])
 
 
 def parse_args(): # pragma: no cover
-    """Parse the arguments for CLI."""
+    """Parse the arguments for :py:func:`cli`."""
     description = "Convert a WebTAG Databook to JSON"
     arg_parser = argparse.ArgumentParser(description=description)
     arg_parser.add_argument("file",
@@ -165,10 +166,10 @@ def parse_args(): # pragma: no cover
 
 
 def cli(args):
-    """Provide a CLI for the WebTagParser.
+    """Provide a CLI for the :py:class:`~.WebTagParser`.
 
     Arguments:
-      args (argparse.Namespace): The parsed command line arguments
+      args (``argparse.Namespace``): The parsed command line arguments.
 
     """
     if args.verbose:

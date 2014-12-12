@@ -12,7 +12,7 @@ def databook():
 
 @pytest.fixture(scope='module')
 def latest_databook():
-    return WebTagData.latest_json(DATA)
+    return WebTagData.from_latest_json(DATA)
 
 
 class TestWebTagData():

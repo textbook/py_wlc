@@ -9,38 +9,39 @@ class IndexSeries(Mapping):
     values dictionary is filled lazily - values are only calculated as
     needed.
 
-    The class supports a Mapping interface, factors can be accessed with:
+    The class supports a Mapping interface, factors can be accessed
+    with ``value = growth_rate[year]``.
 
-        value = growth_rate[year]
-
-    Note:
-      The term 'relative year' refers to the year relative to year_zero
-      e.g. 3. The term 'absolute year' refers to a calendar year, e.g.
-      2013. Relative years are used internally, absolute years for the
-      external interface.
+    Notes:
+      The term 'relative year' refers to the year relative to
+      ``year_zero`` e.g. ``3``. The term 'absolute year' refers to a
+      calendar year, e.g. ``2013``. Relative years are used internally,
+      absolute years for the external interface.
 
     Arguments:
-      base_year (int): the year in which the value is equal to the
-        initial_value
-      rates (dict of int: float): the growth rates to use, keyed
-        by relative year
-      initial_value (float): the first value for the output series
-      year_zero (int): the zeroth year for accessing growth rates
-      initial_rate (float, optional): the rate to use for years
-        prior to the first year in the rates dictionary
+      base_year (``int``): the year in which the value is equal to the
+        ``initial_value``
+      rates (``dict`` of ``int``: ``float``): the growth rates to use,
+        keyed by relative year
+      initial_value (``float``): the first value for the output series.
+      year_zero (``int``): the zeroth year for accessing growth rates.
+      initial_rate (``float``, optional): the rate to use for years
+        prior to the first year in the ``rates`` dictionary
 
     Attributes:
-      base_year (int): The base year for discounting, i.e. the year in
-        which the value is the initial value.
-      year_zero (int): The zeroth year for growth, i.e. the year from
-        which the rates are selected from _rates.
-      _rates (dict of int: float): The growth rates, where the key is
-        the relative start year and the value is the rate to apply.
-      _initial_rate (float): The growth rate corresponding to the first
-        year in the rates dictionary.
-      _final_rate (float): The growth rate corresponding to the last year
-        in the rates dictionary.
-      _values (dict of int: float): The values, keyed by year.
+      base_year (``int``): The base year for discounting, i.e. the year
+        in which the value is the ``initial_value``.
+      year_zero (``int``): The zeroth year for growth, i.e. the year
+        from which the rates are selected from ``_rates``.
+      _rates (``dict`` of ``int``: ``float``): The growth rates, where
+        the key is the relative start year and the value is the rate to
+        apply.
+      _initial_rate (``float``): The growth rate corresponding to the
+        first year in the ``rates`` dictionary.
+      _final_rate (``float``): The growth rate corresponding to the
+        last year in the ``rates`` dictionary.
+      _values (``dict`` of ``int``: ``float``): The values, keyed by
+        year.
 
     """
     def __init__(self, base_year, rates, initial_value,
@@ -106,53 +107,3 @@ class IndexSeries(Mapping):
     def _extend_values(self, year):
         """Extend the values dictionary to cover the specified year."""
         raise NotImplementedError
-
-
-class ValueSeries(Mapping):
-    """
-
-    It is assumed that all years outside the specified series take the
-    closest value within the series.
-
-    Args:
-      base_year (int): the base year of the series
-      values (dict of int: float): the values of the series
-
-    """
-
-    def __init__(self, base_year, values):
-        self._base_year = base_year
-        self._values = values
-        self._first_year = min(values)
-        self._last_year = max(values)
-        self._hash = None
-
-    def __getitem__(self, year):
-        year -= self._base_year
-        if year < self._first_year:
-            return self._values[self._first_year]
-        elif year > self._last_year:
-            return self._values[self._last_year]
-        return self._values[year]
-
-    def __iter__(self):
-        return iter(self._values)
-
-    def __len__(self):
-        return len(self._values)
-
-    def __hash__(self):
-        if self._hash is None:
-            self._hash = (hash(self._base_year) ^
-                          hash(frozenset(self._values.items())))
-        return self._hash
-
-    def __eq__(self, other):
-        return (self._values == other._values and
-                self._base_year == other._base_year)
-
-
-class AbsoluteValueSeries(ValueSeries):
-
-    def __init__(self, values):
-        super(AbsoluteValueSeries, self).__init__(0, values)
