@@ -31,6 +31,14 @@ class TestStandardDiscount:
         assert abs(green_book[2050] - 0.2651) < TOLERANCE
         assert abs(green_book[2135] - 0.0274) < TOLERANCE
 
+    def test_parent_magic_methods(self, green_book):
+        book_two = Discount(2010)
+        assert green_book == book_two
+        assert hash(green_book) == hash(book_two)
+        assert len(book_two) == 1
+        for year in book_two:
+            assert year == 0
+
 
 class TestComplexDiscount:
     """Test complex discounting against DfT RIOC v1.4."""
