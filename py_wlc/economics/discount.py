@@ -49,7 +49,7 @@ class Discount(IndexSeries):
     def _rate(self, year):
         if year < (self.base_year - self.year_zero):
             return 0.0
-        return super()._rate(year)
+        return super(Discount, self)._rate(year)
 
     def _extend_values(self, year):
         for year_ in range(max(self._values), year):
