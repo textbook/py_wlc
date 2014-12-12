@@ -13,5 +13,5 @@ htmlcov
 /docs/py_wlc.*
 
 # PyCharm
-**/.idea/workspace.xml
-**/.idea/dictionaries
+workspace.xml
+/.idea/dictionaries
