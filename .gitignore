@@ -9,8 +9,8 @@ htmlcov
 .coverage
 
 # Built docs
-/docs/_build
-/docs/py_wlc.*
+docs/_build
+docs/py_wlc.*
 
 # PyCharm
 .idea/dictionaries

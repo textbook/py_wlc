@@ -2,6 +2,7 @@
   <dictionary name="jonrsharpe">
     <words>
       <w>databook</w>
+      <w>pylint</w>
     </words>
   </dictionary>
 </component>
