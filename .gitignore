@@ -11,3 +11,7 @@ htmlcov
 # Built docs
 _build
 /docs/py_wlc.*
+
+# PyCharm
+/.idea/workspace.xml
+/.idea/dictionaries
