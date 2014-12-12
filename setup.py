@@ -25,7 +25,7 @@ class PyTest(TestCommand):
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ['--cov=py_wlc']
+        self.test_args = []
         self.test_suite = True
 
     def run_tests(self):
@@ -51,6 +51,6 @@ setup(author='Jonathan Sharpe',
       platforms='any',
       scripts=['py_wlc/data/webtag_parser.py'],
       test_suite='py_wlc.test.test_py_wlc',
-      tests_require=['pytest', 'pytest-cov'],
+      tests_require=['pytest'],
       url='http://github.com/textbook/py_wlc/',
       version=py_wlc.__version__)
