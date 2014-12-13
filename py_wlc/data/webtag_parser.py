@@ -165,8 +165,8 @@ def parse_args(): # pragma: no cover
     arg_parser = argparse.ArgumentParser(description=description)
     arg_parser.add_argument("file",
                             help="file to parse")
-    group1 = arg_parser.add_argument_group("Output to file",
-                                           "Choose file rather than pipe.")
+    group1 = arg_parser.add_argument_group("output to file",
+                                           "choose file for output")
     group1.add_argument("-o",
                         help="file to output to")
     verbose = group1.add_argument("-v", "--verbose",
@@ -174,8 +174,8 @@ def parse_args(): # pragma: no cover
                                   help="increase output verbosity")
     args_ = arg_parser.parse_args()
     if args_.o is None and args_.verbose:
-        msg = "Verbose mode not supported unless output file supplied."
-        raise argparse.ArgumentError(verbose, msg)
+        msg = "-v and -o are mutually exclusive"
+        parser.error(verbose, msg)
     return args_
 
 
