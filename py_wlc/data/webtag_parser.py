@@ -5,6 +5,7 @@ This class parses the databook to a more convenient JSON format for
 use by :py:class:`~.WebTagData`.
 
 """
+from __future__ import print_function
 import argparse
 import datetime
 import json
