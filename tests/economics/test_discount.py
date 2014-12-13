@@ -26,15 +26,17 @@ class TestStandardDiscount:
 
     def test_factors(self, green_book):
         assert abs(green_book[2005] - 1.0) < TOLERANCE
-        assert abs(green_book[2020] - 0.7089) < TOLERANCE
         assert abs(green_book[2030] - 0.5026) < TOLERANCE
+        assert abs(green_book[2020] - 0.7089) < TOLERANCE
         assert abs(green_book[2050] - 0.2651) < TOLERANCE
         assert abs(green_book[2135] - 0.0274) < TOLERANCE
 
     def test_parent_magic_methods(self, green_book):
         book_two = Discount(2010)
         assert green_book == book_two
-        assert hash(green_book) == hash(book_two)
+        hash_ = hash(green_book)
+        assert hash_ == hash(book_two)
+        assert hash(green_book) == hash_
         assert len(book_two) == 1
         for year in book_two:
             assert year == 0
