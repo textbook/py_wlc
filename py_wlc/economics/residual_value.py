@@ -11,17 +11,13 @@ def sum_of_years(year):
 
 
 def _double_declining(value, life, build_year, target_year, scrap_value):
-    book_value = value
-    rate = 2 * (1 / life)
-    for year in range(target_year-build_year):
-        book_value *= (1 - rate)
-    return max(scrap_value, book_value)
+    value *= (1 - (2 * (1 / life))) ** (target_year - build_year)
+    return max(scrap_value, value)
 
 
 def _linear(value, life, build_year, target_year, scrap_value):
-    return ((value - scrap_value) *
-            (1 - ((target_year - build_year) /
-                  life))) + scrap_value
+    fact = 1 - ((target_year - build_year) / life)
+    return ((value - scrap_value) * fact) + scrap_value
 
 
 def _sum_of_years(value, life, build_year, target_year, scrap_value):
