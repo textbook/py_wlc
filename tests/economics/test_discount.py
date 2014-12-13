@@ -8,10 +8,6 @@ TOLERANCE = 0.0001
 def green_book():
     return Discount(2010)
 
-@pytest.fixture(scope='module')
-def complex_discount():
-    return Discount(2010, year_zero=2014)
-
 
 class TestStandardDiscount:
     """Test a simple Discount against Green Book rates."""
@@ -25,11 +21,10 @@ class TestStandardDiscount:
         assert abs(green_book._rate(400) - 0.01) < TOLERANCE
 
     def test_factors(self, green_book):
-        assert abs(green_book[2005] - 1.0) < TOLERANCE
-        assert abs(green_book[2030] - 0.5026) < TOLERANCE
-        assert abs(green_book[2020] - 0.7089) < TOLERANCE
-        assert abs(green_book[2050] - 0.2651) < TOLERANCE
-        assert abs(green_book[2135] - 0.0274) < TOLERANCE
+        factors = {2005: 1.0000, 2010: 1.0000, 2020: 0.7089,
+                   2030: 0.5026, 2050: 0.2651, 2135: 0.0274}
+        for year, fact in factors.items():
+            assert abs(green_book[year] - fact) < TOLERANCE
 
     def test_parent_magic_methods(self, green_book):
         book_two = Discount(2010)
@@ -45,5 +40,6 @@ class TestStandardDiscount:
 class TestComplexDiscount:
     """Test complex discounting against DfT RIOC v1.4."""
 
-    def test_factor(self, complex_discount):
+    def test_factor(self, green_book):
+        complex_discount = green_book.rebase(2014)
         assert abs(complex_discount[2160] - 0.0158) < TOLERANCE

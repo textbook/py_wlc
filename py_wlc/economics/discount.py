@@ -32,17 +32,19 @@ class Discount(IndexSeries):
     def __init__(self, base_year, rates=None, year_zero=None):
         if rates is None:
             rates = self.RATES
-        initial_rate = rates[min(rates)]
         super(Discount, self).__init__(base_year, rates,
                                        initial_value=1.0,
-                                       year_zero=year_zero,
-                                       initial_rate=initial_rate)
+                                       year_zero=year_zero)
 
     def __getitem__(self, year):
         try:
             return super(Discount, self).__getitem__(year)
         except KeyError:
             return 1.0
+
+    def rebase(self, year_zero):
+        """Create a :py:class:`~.Discount` with new ``year_zero``."""
+        return Discount(self.base_year, self._rates, year_zero)
 
     def _rate(self, year):
         if year < (self.base_year - self.year_zero):
