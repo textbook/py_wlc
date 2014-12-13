@@ -7,6 +7,7 @@ from py_wlc.data import cli, WebTagParser
 
 DATA = os.path.join(os.getcwd(), "tests", "data")
 DATABOOK = os.path.join(DATA, "test_databook.xls")
+FAILFILE = os.path.join(DATA, "fail_databook.xls")
 TEMPFILE = os.path.join(DATA, "temp.json")
 COMPFILE = os.path.join(DATA, "test_databook.json")
 
@@ -18,7 +19,7 @@ def parser(request):
     request.addfinalizer(clean_up)
     return parser
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def args(request):
     # Create generic arguments
     class Generic():
@@ -37,7 +38,23 @@ def args(request):
 
 class TestWebTagParser():
 
-    def test_cli(self, args):
+    def test_failure(self):
+        with pytest.raises(IOError):
+            parser = WebTagParser(COMPFILE)
+        with pytest.raises(IOError):
+            parser = WebTagParser(FAILFILE)
+
+    def test_context_manager(self):
+        with WebTagParser(DATABOOK) as parser:
+            assert parser.version == "Nov 2014 release v1.3b"
+
+    def test_setup(self, parser):
+        assert parser.version == "Nov 2014 release v1.3b"
+
+
+class TestParserCli():
+
+    def test_output_file(self, args):
         cli(args)
         assert os.path.exists(TEMPFILE)
         with open(TEMPFILE) as temp, open(COMPFILE) as comp:
@@ -47,9 +64,12 @@ class TestWebTagParser():
                 dict_.pop("source")
             assert temp_ == comp_
 
-    def test_context_manager(self):
-        with WebTagParser(DATABOOK) as parser:
-            assert parser.version == "Nov 2014 release v1.3b"
+    def test_failure(self, args):
+        args.verbose = True
+        args.o = None
+        with pytest.raises(ValueError):
+            cli(args)
 
-    def test_setup(self, parser):
-        assert parser.version == "Nov 2014 release v1.3b"
+    def test_pipe(self, args):
+        args.o = None
+        assert cli(args) is None

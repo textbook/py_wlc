@@ -9,6 +9,7 @@ import argparse
 import datetime
 import json
 from os import path
+from sys import stdout
 
 import xlrd
 
@@ -46,13 +47,18 @@ class WebTagParser(object):
     def __init__(self, filename):
         self.filename = filename
         sht, row, col, val = self.CHECK
+        err_msg = "Not a WebTAG Databook."
         try:
             self.book = xlrd.open_workbook(filename, on_demand=True)
             sheet = self.book.sheet_by_name(sht)
         except xlrd.XLRDError:
-            raise IOError("Not a WebTAG Databook.")
-        if sheet.cell(row, col).value != val:
-            raise IOError("Not a WebTAG Databook.")
+            raise IOError(err_msg)
+        try:
+            compare = sheet.cell(row, col).value
+        except IndexError:
+            raise IOError(err_msg)
+        if compare != val:
+            raise IOError(err_msg)
         self.version = sheet.cell(3, 0).value
         self.date = self._extract_date(*self.DATE)
         self.base_year = self._extract_base(*self.BASE)
@@ -149,39 +155,60 @@ class WebTagParser(object):
 
 
 def parse_args(): # pragma: no cover
-    """Parse the arguments for :py:func:`cli`."""
+    """Parse the arguments for :py:func:`cli`.
+
+    Raises:
+      ArgumentError: If both ``-v`` and ``-o`` are supplied.
+
+    """
     description = "Convert a WebTAG Databook to JSON"
     arg_parser = argparse.ArgumentParser(description=description)
     arg_parser.add_argument("file",
                             help="file to parse")
-    arg_parser.add_argument("-o",
-                            help="file to output to")
-    arg_parser.add_argument("-v", "--verbose",
-                            action="store_true",
-                            help="increase output verbosity")
+    group1 = arg_parser.add_argument_group("Output to file",
+                                           "Choose file rather than pipe.")
+    group1.add_argument("-o",
+                        help="file to output to")
+    verbose = group1.add_argument("-v", "--verbose",
+                                  action="store_true",
+                                  help="increase output verbosity")
     args_ = arg_parser.parse_args()
-    if args_.o is None:
-        args_.o = path.extsep.join((path.splitext(args_.file)[0], "json"))
+    if args_.o is None and args_.verbose:
+        msg = "Verbose mode not supported unless output file supplied."
+        raise argparse.ArgumentError(verbose, msg)
     return args_
 
 
 def cli(args):
     """Provide a CLI for the :py:class:`~.WebTagParser`.
 
+    Notes:
+      Will either output to a specified file (with optional verbose
+      reporting) or dump the JSON data to ``stdout``.
+
     Arguments:
       args (``argparse.Namespace``): The parsed command line arguments.
 
+    Raises:
+      ValueError: If both ``-v`` and ``-o`` are supplied.
+
     """
+    if args.o is None and args.verbose:
+        raise ValueError("Verbose mode not supported unless output file set.")
     if args.verbose:
         print("Reading from input file {}".format(args.file))
     with WebTagParser(args.file) as parser:
         data = parser.extract_all(args.verbose)
         if args.verbose:
             print("Data extracted from input file")
-    with open(args.o, "w") as outfile:
-        if args.verbose:
-            print("Writing to output file {}".format(args.o))
-        json.dump(data, outfile, indent=4)
+    if args.o is not None:
+        with open(args.o, "w") as outfile:
+            if args.verbose:
+                print("Writing to output file {}".format(args.o))
+            json.dump(data, outfile, indent=4)
+    else:
+        stdout.write(json.dumps(data, indent=4))
+
 
 
 if __name__ == "__main__":
