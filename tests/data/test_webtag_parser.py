@@ -1,9 +1,11 @@
+import argparse
 import json
 import os
 
 import pytest
 
 from py_wlc.data import cli, WebTagParser
+from py_wlc.data.webtag_parser import parse_args
 
 DATA = os.path.join(os.getcwd(), "tests", "data")
 DATABOOK = os.path.join(DATA, "test_databook.xls")
@@ -73,3 +75,28 @@ class TestParserCli():
     def test_pipe(self, args):
         args.o = None
         assert cli(args) is None
+
+
+class TestArgParsing():
+
+    def test_argparse_fail(self):
+        with pytest.raises(SystemExit):
+            _ = parse_args(['infile', '-v'])
+
+    def test_verbose(self):
+        args_ = parse_args(['infile', '-o', 'outfile', '-v'])
+        assert args_.verbose
+        assert args_.file == "infile"
+        assert args_.o == "outfile"
+
+    def test_outfile(self):
+        args_ = parse_args(['infile', '-o', 'outfile'])
+        assert not args_.verbose
+        assert args_.file == "infile"
+        assert args_.o == "outfile"
+
+    def test_pipe(self):
+        args_ = parse_args(['infile'])
+        assert not args_.verbose
+        assert args_.file == "infile"
+        assert args_.o is None

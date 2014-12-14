@@ -10,7 +10,7 @@ import argparse
 import datetime
 import json
 from os import path
-from sys import stdout
+from sys import argv, stdout
 
 import xlrd
 
@@ -155,31 +155,34 @@ class WebTagParser(object):
         return self.extract_data(*self.LOCATIONS[name])
 
 
-def parse_args():  # pragma: no cover
+def parse_args(args):
     """Parse the arguments for :py:func:`cli`.
 
+    Arguments:
+      args (``list`` of ``str``): Arguments from command line.
+
     Returns:
-      Namespace: The parsed arguments.
+      ``argparse.Namespace``: The parsed arguments.
 
     Raises:
-      ArgumentError: If both ``-v`` and ``-o`` are supplied.
+      ArgumentError: If ``-v`` is supplied without ``-o``.
 
     """
     description = "Convert a WebTAG Databook to JSON"
     arg_parser = argparse.ArgumentParser(description=description)
     arg_parser.add_argument("file",
                             help="file to parse")
-    group1 = arg_parser.add_argument_group("output to file",
-                                           "choose file for output")
+    group1 = arg_parser.add_argument_group("Output to file",
+                                           "Choose file rather than pipe.")
     group1.add_argument("-o",
                         help="file to output to")
-    verbose = group1.add_argument("-v", "--verbose",
-                                  action="store_true",
-                                  help="increase output verbosity")
-    args_ = arg_parser.parse_args()
+    group1.add_argument("-v", "--verbose",
+                        action="store_true",
+                        help="increase output verbosity")
+    args_ = arg_parser.parse_args(args)
     if args_.o is None and args_.verbose:
-        msg = "-v and -o are mutually exclusive"
-        parser.error(verbose, msg)
+        msg = "-v cannot be used without -o"
+        arg_parser.error(msg)
     return args_
 
 
@@ -197,6 +200,7 @@ def cli(args):
       ValueError: If both ``-v`` and ``-o`` are supplied.
 
     """
+    print(args.file, args.o, args.verbose)
     if args.o is None and args.verbose:
         raise ValueError("Verbose mode not supported unless output file set.")
     if args.verbose:
@@ -214,6 +218,5 @@ def cli(args):
         stdout.write(json.dumps(data, indent=4))
 
 
-
 if __name__ == "__main__":
-    cli(parse_args())
+    cli(parse_args(argv[1:]))
