@@ -33,7 +33,8 @@ class TestResidualValue:
 
     def test_functions(self, calc):
         assert calc.method == calc._method
-        assert "linear" in ResidualValueCalculator.available_methods()
+        assert (calc.available_methods() ==
+                ResidualValueCalculator.available_methods())
 
     def test_failure(self, calc):
         with pytest.raises(ValueError):

@@ -1,3 +1,5 @@
+"""Generic functionality for modelling growth series."""
+
 from collections import Mapping
 
 

@@ -1,3 +1,5 @@
+""":py:mod:`~.discount` enables the calculation of Present Value."""
+
 from ..generic import IndexSeries
 
 

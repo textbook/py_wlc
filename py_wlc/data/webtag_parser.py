@@ -155,8 +155,11 @@ class WebTagParser(object):
         return self.extract_data(*self.LOCATIONS[name])
 
 
-def parse_args(): # pragma: no cover
+def parse_args():  # pragma: no cover
     """Parse the arguments for :py:func:`cli`.
+
+    Returns:
+      Namespace: The parsed arguments.
 
     Raises:
       ArgumentError: If both ``-v`` and ``-o`` are supplied.
