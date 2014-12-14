@@ -55,22 +55,22 @@ class WebTagData(object):
         return Discount(self.base_year)
 
     @classmethod
-    def from_latest_json(cls, dir):
+    def from_latest_json(cls, dir_):
         """Extract data from the most recent JSON in the directory.
 
         Arguments:
-          dir (str): The directory to start from.
+          dir_ (str): The directory to start from.
 
         Returns:
           :py:class:`~.WebTagData`: A new class instance.
 
         """
         latest_data = latest_date = None
-        for curdir, _, files in walk(dir):
+        for curdir, _, files in walk(dir_):
             for file in files:
                 if file.endswith(".json"):
-                    with open(path.join(curdir, file)) as f:
-                        data = json.load(f)
+                    with open(path.join(curdir, file)) as file_:
+                        data = json.load(file_)
                     date = data.get("released", "")
                     if latest_date is None or date > latest_date:
                         latest_data = data
@@ -89,7 +89,7 @@ class WebTagData(object):
           :py:class:`~.WebTagData`: A new class instance.
 
         """
-        with open(file) as f:
-            data = json.load(f)
+        with open(file) as file_:
+            data = json.load(file_)
         return cls(**data)
 

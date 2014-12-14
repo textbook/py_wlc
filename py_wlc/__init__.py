@@ -1,3 +1,5 @@
+"""Functionality for whole-life costing in Python"""
+
 __author__ = 'jonrsharpe'
 __version__ = '0.0.1'
 

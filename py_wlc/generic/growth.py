@@ -93,6 +93,7 @@ class IndexSeries(Mapping):
         return self._hash
 
     def __eq__(self, other):
+        # pylint: disable=protected-access
         return (self.base_year == other.base_year and
                 self.year_zero == other.year_zero and
                 self._rates == other._rates)

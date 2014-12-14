@@ -11,6 +11,7 @@ def memo(func):
     """
     @wraps(func)
     def wrapper(*args):
+        """Function returned by decorator."""
         if args not in wrapper.cache:
             wrapper.cache[args] = func(*args)
         return wrapper.cache[args]

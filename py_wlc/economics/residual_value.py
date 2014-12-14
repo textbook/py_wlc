@@ -126,6 +126,7 @@ class ResidualValueCalculator(object):
            http://en.wikipedia.org/wiki/Depreciation#Declining_Balance_Method
 
         """
+        _ = scrap_value
         return value * (1 - (2 * (1 / life))) ** (target_year - build_year)
 
     @staticmethod

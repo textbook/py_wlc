@@ -1,7 +1,7 @@
 py_wlc
 ======
 
-A Python library offering whole-life costing functionality.
+Functionality for whole-life costing in Python.
 
 [![Build Status](https://travis-ci.org/textbook/py_wlc.svg?branch=develop)](https://travis-ci.org/textbook/py_wlc)
 
