@@ -15,5 +15,6 @@ pytest==2.6.4
 pytest-cov==1.8.1
 requests==2.5.0
 six==1.8.0
+sphinx-rtd-theme==0.1.6
 sphinxcontrib-napoleon==0.2.8
 xlrd==0.9.3
