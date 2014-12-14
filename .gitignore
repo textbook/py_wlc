@@ -10,7 +10,6 @@ htmlcov
 
 # Built docs
 docs/build
-docs/source/py_wlc*
 
 # PyCharm
 .idea/dictionaries
