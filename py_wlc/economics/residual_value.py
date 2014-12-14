@@ -181,7 +181,7 @@ class ResidualValueCalculator(object):
         """
         res_life = life - (target_year - build_year)
         fact = ((sum_of_years_digits(life) - sum_of_years_digits(res_life)) /
-                sum_of_years(life))
+                sum_of_years_digits(life))
         return scrap_value + ((value - scrap_value) * (1 - fact))
 
 
