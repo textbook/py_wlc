@@ -1,6 +1,6 @@
 import pytest
 
-from py_wlc.economics.residual_value import ResidualValueCalculator
+from py_wlc.economics import ResidualValueCalculator
 
 TOLERANCE = 0.0001
 

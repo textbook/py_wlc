@@ -6,8 +6,3 @@ __version__ = '0.0.1'
 # Configure logging
 import logging
 logging.getLogger('py_wlc').addHandler(logging.NullHandler())
-
-from .data import WebTagData
-
-from .economics import Discount
-

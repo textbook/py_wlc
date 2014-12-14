@@ -1,6 +1,6 @@
 import pytest
 
-from py_wlc import Discount
+from py_wlc.economics import Discount
 
 TOLERANCE = 0.0001
 

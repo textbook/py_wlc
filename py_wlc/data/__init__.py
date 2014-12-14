@@ -6,5 +6,5 @@ classes for handling that data.
 
 """
 
-from .webtag_parser import WebTagParser, cli
+from .webtag_parser import WebTagParser
 from .webtag_data import WebTagData
