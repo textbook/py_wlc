@@ -10,9 +10,9 @@ Automated Bragging
 
 [![Coverage Status](https://coveralls.io/repos/textbook/py_wlc/badge.png?branch=develop)](https://coveralls.io/r/textbook/py_wlc?branch=develop)
 
-[![Documentation Status](https://readthedocs.org/projects/py-wlc/badge/?version=develop)](https://readthedocs.org/projects/py-wlc/?badge=develop)
+[![Documentation Status](https://readthedocs.org/projects/py-wlc/badge/?version=latest)](https://readthedocs.org/projects/py-wlc/?badge=latest)
    
 Documentation
 -------------
 
-[`py_wlc` documentation](http://py-wlc.readthedocs.org/en/develop/index.html).
+[`py_wlc` documentation](http://py-wlc.readthedocs.org/en/latest/).
