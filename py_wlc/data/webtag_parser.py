@@ -197,7 +197,7 @@ def cli(args):
       args (``argparse.Namespace``): The parsed command line arguments.
 
     Raises:
-      ValueError: If both ``-v`` and ``-o`` are supplied.
+      ValueError: If ``-v`` is supplied without ``-o``.
 
     """
     print(args.file, args.o, args.verbose)
