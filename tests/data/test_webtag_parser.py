@@ -9,7 +9,6 @@ from py_wlc.data.webtag_parser import parse_args
 
 DATA = os.path.join(os.getcwd(), "tests", "data")
 DATABOOK = os.path.join(DATA, "test_databook.xls")
-FAILFILE = os.path.join(DATA, "fail_databook.xls")
 TEMPFILE = os.path.join(DATA, "temp.json")
 COMPFILE = os.path.join(DATA, "test_databook.json")
 
@@ -42,9 +41,11 @@ class TestWebTagParser():
 
     def test_failure(self):
         with pytest.raises(IOError):
-            parser = WebTagParser(COMPFILE)
+            _ = WebTagParser(COMPFILE)
         with pytest.raises(IOError):
-            parser = WebTagParser(FAILFILE)
+            _ = WebTagParser(os.path.join(DATA, "fail_databook.xls"))
+        with pytest.raises(IOError):
+            _ = WebTagParser(os.path.join(DATA, "not_databook.xls"))
 
     def test_context_manager(self):
         with WebTagParser(DATABOOK) as parser:

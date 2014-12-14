@@ -21,9 +21,11 @@ class WebTagData(object):
             logger.warning("WebTAG data is more than one year old")
         self.version = version
         self.source = source
-        self.discount = self._parse_discount(data.get("discount_rate"))
+        self.discount = self._parse_discount(data.get("discount_rate"),
+                                             self.base_year)
 
-    def _parse_discount(self, data):
+    @staticmethod
+    def _parse_discount(data, base_year):
         """Parse the discount data from WebTAG into a ``Discount``.
 
         Notes:
@@ -49,10 +51,10 @@ class WebTagData(object):
                     if key.isdigit():
                         key = int(key)
                     else:
-                        continue
+                        continue  # pragma: no cover
                 rates[key] = val
-            return Discount(self.base_year, rates)
-        return Discount(self.base_year)
+            return Discount(base_year, rates)
+        return Discount(base_year)
 
     @classmethod
     def from_latest_json(cls, dir_):
