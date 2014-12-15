@@ -70,13 +70,16 @@ class WebTagData(object):
         latest_data = latest_date = None
         for curdir, _, files in walk(dir_):
             for file in files:
-                if file.endswith(".json"):
-                    with open(path.join(curdir, file)) as file_:
+                with open(path.join(curdir, file)) as file_:
+                    try:
                         data = json.load(file_)
-                    date = data.get("released", "")
-                    if latest_date is None or date > latest_date:
-                        latest_data = data
-                        latest_date = date
+                    except ValueError:
+                        pass
+                    else:
+                        date = data.get("released", "")
+                        if latest_date is None or date > latest_date:
+                            latest_data = data
+                            latest_date = date
         if latest_data is not None:
             return cls(**latest_data)
 
@@ -94,4 +97,3 @@ class WebTagData(object):
         with open(file) as file_:
             data = json.load(file_)
         return cls(**data)
-
