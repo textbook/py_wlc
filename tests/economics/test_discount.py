@@ -17,8 +17,8 @@ class TestStandardDiscount:
         assert abs(green_book._final_rate - 0.01) < TOLERANCE
 
     def test_rates(self, green_book):
-        assert abs(green_book._rate(-10)) < TOLERANCE
-        assert abs(green_book._rate(400) - 0.01) < TOLERANCE
+        assert abs(green_book.rate(-10)) < TOLERANCE
+        assert abs(green_book.rate(400) - 0.01) < TOLERANCE
 
     def test_factors(self, green_book):
         factors = {2005: 1.0000, 2010: 1.0000, 2020: 0.7089,

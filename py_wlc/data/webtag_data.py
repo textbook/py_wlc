@@ -33,9 +33,11 @@ class WebTagData(object):
           separated format, with the first part being the start year.
 
         Arguments:
-          data (dict): The dictionary of discount rate data (or
-            ``None`` if not present - this will produce a
+          data (``dict`` or ``None``): The dictionary of discount rate
+            data (or ``None`` - this will produce a
             :py:class:`~.Discount` with the default rates).
+          base_year (``int``): The base year for the new
+            :py:class:`~.Discount` object.
 
         Returns:
           :py:class:`~.Discount`: The new Discount object.
@@ -61,7 +63,7 @@ class WebTagData(object):
         """Extract data from the most recent JSON in the directory.
 
         Arguments:
-          dir_ (str): The directory to start from.
+          dir_ (``str``): The directory to start searching from.
 
         Returns:
           :py:class:`~.WebTagData`: A new class instance.
@@ -88,7 +90,7 @@ class WebTagData(object):
         """Extract data from the specified JSON.
 
         Arguments:
-          file (str): The file to import from.
+          file (``str``): The file to import from.
 
         Returns:
           :py:class:`~.WebTagData`: A new class instance.

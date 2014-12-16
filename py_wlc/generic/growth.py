@@ -1,20 +1,20 @@
 """Generic functionality for modelling growth series."""
 
-from collections import Mapping
 
-
-class IndexSeries(Mapping):
+class IndexSeries(object):
 
     """Growth rates and factors for indexation series.
 
-    The rates dictionary is fully-populated at initialisation, but the
-    values dictionary is filled lazily - values are only calculated as
-    needed.
-
-    The class supports a Mapping interface, factors can be accessed
-    with ``value = growth_rate[year]``.
-
     Notes:
+      The ``_rates`` dictionary is fully-populated at initialisation,
+      but the ``_values`` dictionary is filled lazily - values are only
+      calculated as needed.
+
+      The class supports a ``Mapping``-like interface; factors can be
+      accessed with ``value = growth_rate[year]`` or ``value =
+      growth_rate.get(year, default)``.
+
+    Note:
       The term 'relative year' refers to the year relative to
       ``year_zero`` e.g. ``3``. The term 'absolute year' refers to a
       calendar year, e.g. ``2013``. Relative years are used internally,
@@ -98,8 +98,33 @@ class IndexSeries(Mapping):
                 self.year_zero == other.year_zero and
                 self._rates == other._rates)
 
-    def _rate(self, year):
-        """Get the rate in use in the specified year."""
+    def get(self, year, default=None):
+        """Retrieve value or supplied default for given year.
+
+        Arguments:
+          year (int): The year to retrieve the value for.
+          default (float or None, optional): The value to return if
+            retrieval fails. Defaults to ``None``.
+
+        Returns:
+          float or None: The retrieved or ``default`` value.
+
+        """
+        try:
+            self.__getitem__(year)
+        except KeyError:
+            return default
+
+    def rate(self, year):
+        """The rate used in the specified year.
+
+        Arguments:
+          year (int): The year to retrieve the rate for.
+
+        Returns:
+          float: The rate used in that year.
+
+        """
         try:
             return self._rates[year]
         except KeyError:

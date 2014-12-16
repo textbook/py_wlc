@@ -8,6 +8,12 @@ def memo(func):
     Note:
       Currently only implemented for positional arguments.
 
+    Arguments:
+      func (callable): The function to decorate.
+
+    Returns:
+      callable: The decorated function.
+
     """
     @wraps(func)
     def wrapper(*args):

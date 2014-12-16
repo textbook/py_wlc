@@ -45,15 +45,33 @@ class Discount(IndexSeries):
             return 1.0
 
     def rebase(self, year_zero):
-        """Create a :py:class:`~.Discount` with new ``year_zero``."""
+        """Create a :py:class:`~.Discount` with new ``year_zero``.
+
+        Arguments:
+          year_zero (``int``): The new ``year_zero`` to use.
+
+        Returns:
+          :py:class:`~.Discount`: The new :py:class:`~.Discount`
+            object.
+
+        """
         return Discount(self.base_year, self._rates, year_zero)
 
-    def _rate(self, year):
+    def rate(self, year):
+        """The rate used in the specified year.
+
+        Arguments:
+          year (``int``): The year to retrieve the rate for.
+
+        Returns:
+          float: The rate used in that year.
+
+        """
         if year < (self.base_year - self.year_zero):
             return 0.0
-        return super(Discount, self)._rate(year)
+        return super(Discount, self).rate(year)
 
     def _extend_values(self, year):
         for year_ in range(max(self._values), year):
             self._values[year_+1] = (self._values[year_] /
-                                     (1.0 + self._rate(year_+1)))
+                                     (1.0 + self.rate(year_+1)))
