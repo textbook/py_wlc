@@ -5,14 +5,13 @@ class IndexSeries(object):
 
     """Growth rates and factors for indexation series.
 
-    Notes:
-      The ``_rates`` dictionary is fully-populated at initialisation,
-      but the ``_values`` dictionary is filled lazily - values are only
-      calculated as needed.
+    The ``_rates`` dictionary is fully-populated at initialisation, but
+    the ``_values`` dictionary is filled lazily - values are only
+    calculated as needed.
 
-      The class supports a ``Mapping``-like interface; factors can be
-      accessed with ``value = growth_rate[year]`` or ``value =
-      growth_rate.get(year, default)``.
+    The class supports a ``Mapping``-like interface; factors can be
+    accessed with ``value = growth_rate[year]`` or ``value =
+    growth_rate.get(year, default)``.
 
     Note:
       The term 'relative year' refers to the year relative to

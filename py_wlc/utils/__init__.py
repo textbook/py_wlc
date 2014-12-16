@@ -6,10 +6,10 @@ def memo(func):
     """Memoizing decorator for caching function results.
 
     Note:
-      Currently only implemented for positional arguments.
+      Currently only implemented for hashable positional arguments.
 
     Arguments:
-      func (callable): The function to decorate.
+      func (``callable``): The function to decorate.
 
     Returns:
       callable: The decorated function.

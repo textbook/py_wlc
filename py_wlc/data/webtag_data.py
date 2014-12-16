@@ -28,9 +28,8 @@ class WebTagData(object):
     def _parse_discount(data, base_year):
         """Parse the discount data from WebTAG into a ``Discount``.
 
-        Notes:
-          Assumes that all years will be in dash-separated or space-
-          separated format, with the first part being the start year.
+        Assumes that all years will be in dash-separated or space-
+        separated format, with the first part being the start year.
 
         Arguments:
           data (``dict`` or ``None``): The dictionary of discount rate

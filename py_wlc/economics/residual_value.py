@@ -9,7 +9,7 @@ def sum_of_years_digits(year):
     """Calculate the sum of years' digits.
 
     Arguments:
-      year (int): The year to calculate up to.
+      year (``int``): The year to calculate up to.
 
     Returns:
       int: The sum of years' digits.
@@ -58,10 +58,9 @@ class ResidualValueCalculator(object):
     def calculate(self, value, life, build_year, target_year, scrap_value=0.0):
         """Calculate residual value, using selected :py:attr:`method`.
 
-        Notes:
-          Residual value is assumed to be the ``scrap_value`` after the
-          life expires (``build_year + life``). The residual value is
-          never allowed to fall below the ``scrap_value``.
+        Residual value is assumed to be the ``scrap_value`` after the
+        life expires (``build_year + life``). The residual value is
+        never allowed to fall below the ``scrap_value``.
 
         Arguments:
           value (``float``): The initial asset value.
@@ -104,12 +103,11 @@ class ResidualValueCalculator(object):
     def double_declining(value, life, build_year, target_year, scrap_value):
         """Calculate residual value with double-declining method.
 
-        Notes:
-          The double-declining method, a specific `declining balance`_
-          method, assumes that the same proportion of the remaining
-          value is lost in each year of the asset's life. In this case,
-          the proportion is double the proportion lost in each year
-          under the :py:meth:`linear` method.
+        The double-declining method, a specific `declining balance`_
+        method, assumes that the same proportion of the remaining value
+        is lost in each year of the asset's life. In this case, the
+        proportion is double the proportion lost in each year under the
+        :py:meth:`linear` method.
 
         Arguments:
           value (``float``): The initial asset value.
@@ -133,10 +131,9 @@ class ResidualValueCalculator(object):
     def linear(value, life, build_year, target_year, scrap_value):
         """Calculate residual value with linear (straight-line) method.
 
-        Notes:
-          The linear (or `straight-line depreciation`_) method assumes
-          that the same amount of the asset's value is lost in every
-          year of its life.
+        The linear (or `straight-line depreciation`_) method assumes
+        that the same amount of the asset's value is lost in every year
+        of its life.
 
         Arguments:
           value (``float``): The initial asset value.
@@ -160,10 +157,9 @@ class ResidualValueCalculator(object):
     def sum_of_years(value, life, build_year, target_year, scrap_value):
         """Calculate residual value with sum of years' digits method.
 
-        Notes:
-          The `sum of years' digits`_ method uses a "schedule of
-          fractions" to depreciate the value, based on summing the
-          digits of all years in the life for the denominator.
+        The `sum of years' digits`_ method uses a "schedule of
+        fractions" to depreciate the value, based on summing the digits
+        of all years in the life for the denominator.
 
         Arguments:
           value (``float``): The initial asset value.
@@ -181,8 +177,8 @@ class ResidualValueCalculator(object):
 
         """
         res_life = life - (target_year - build_year)
-        fact = ((sum_of_years_digits(life) - sum_of_years_digits(res_life)) /
-                sum_of_years_digits(life))
+        fact = sum_of_years_digits(life) - sum_of_years_digits(res_life)
+        fact /= sum_of_years_digits(life)
         return scrap_value + ((value - scrap_value) * (1 - fact))
 
 
