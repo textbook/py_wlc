@@ -25,13 +25,12 @@ class IndexSeries(object):
       rates (``dict`` of ``int``: ``float``): the growth rates to use,
         keyed by relative year
       initial_value (``float``): the first value for the output series.
-      year_zero (``int``): the zeroth year for accessing growth rates.
-      initial_rate (``float``, optional): the rate to use for years
-        prior to the first year in the ``rates`` dictionary
+      year_zero (``int``, optional): the zeroth year for accessing
+        growth rates. Defaults to :py:attr:`base_year`.
 
     Attributes:
-      base_year (``int``): The base year for discounting, i.e. the year
-        in which the value is the ``initial_value``.
+      base_year (``int``): The base year for growth, i.e. the year in
+        which the value is the ``initial_value``.
       year_zero (``int``): The zeroth year for growth, i.e. the year
         from which the rates are selected from ``_rates``.
       _rates (``dict`` of ``int``: ``float``): The growth rates, where
@@ -45,31 +44,15 @@ class IndexSeries(object):
         year.
 
     """
-    def __init__(self, base_year, rates, initial_value,
-                 year_zero=None, initial_rate=None):
+    def __init__(self, base_year, rates, initial_value, year_zero=None):
         self.base_year = base_year
         self._rates = rates.copy()
         if year_zero is None:
             year_zero = base_year
         self.year_zero = year_zero
         self._rates = rates.copy()
-        if initial_rate is None:
-            initial_rate = rates[min(rates)]
-        self._initial_rate = initial_rate
-        self._final_rate = rates[max(rates)]
-
-        min_year = min(rates)
-        max_year = max(rates)
-        rate = initial_rate
-        for year in range(min_year, max_year):
-            if year in rates:
-                rate = rates[year]
-            else:
-                self._rates[year] = rate
-
         self._values = {base_year-year_zero: initial_value}
         self._extend_values(0)
-
         self._hash = None
 
     def __getitem__(self, year):
@@ -96,6 +79,27 @@ class IndexSeries(object):
         return (self.base_year == other.base_year and
                 self.year_zero == other.year_zero and
                 self._rates == other._rates)
+
+    @staticmethod
+    def _infill_rates(rates, initial_rate=None):
+        """Fill in the rates dictionary, in-place, to cover all years.
+
+        Arguments:
+          rates (``dict``): The rates dictionary to fill in.
+          initial_rate (``float``, optional): The value to use for
+            years prior to the first year in ``rates``.
+
+        """
+        if initial_rate is None:
+            initial_rate = rates[min(rates)]
+        min_year = min(rates)
+        max_year = max(rates)
+        rate = initial_rate
+        for year in range(min_year, max_year):
+            if year in rates:
+                rate = rates[year]
+            else:
+                rates[year] = rate
 
     def get(self, year, default=None):
         """Retrieve value or supplied default for given year.
@@ -124,12 +128,7 @@ class IndexSeries(object):
           float: The rate used in that year.
 
         """
-        try:
-            return self._rates[year]
-        except KeyError:
-            if year < min(self._rates):
-                return self._initial_rate
-            return self._final_rate
+        return self._rates[year]
 
     def _extend_values(self, year):
         """Extend the values dictionary to cover the specified year."""

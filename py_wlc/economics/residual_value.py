@@ -69,7 +69,7 @@ class ResidualValueCalculator(object):
           target_year (``int``): The year in which to calculate the
             asset's residual value.
           scrap_value (``float``, optional): The asset's value after
-            life expiry. Defaults to 0.0.
+            life expiry. Defaults to `0.0`.
 
         Returns:
           float: The calculated residual value.

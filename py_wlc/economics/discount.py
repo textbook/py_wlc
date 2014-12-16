@@ -1,6 +1,6 @@
 """:py:mod:`~.discount` enables the calculation of Present Value."""
 
-from ..generic import IndexSeries
+from ..generic import ExtendedDict, IndexSeries
 
 
 class Discount(IndexSeries):
@@ -34,7 +34,9 @@ class Discount(IndexSeries):
     def __init__(self, base_year, rates=None, year_zero=None):
         if rates is None:
             rates = self.RATES
-        super(Discount, self).__init__(base_year, rates,
+        self._infill_rates(rates)
+        super(Discount, self).__init__(base_year,
+                                       ExtendedDict(rates),
                                        initial_value=1.0,
                                        year_zero=year_zero)
 

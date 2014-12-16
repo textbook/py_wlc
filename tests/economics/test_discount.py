@@ -14,7 +14,6 @@ class TestStandardDiscount:
 
     def test_setup(self, green_book):
         assert green_book.base_year == green_book.year_zero
-        assert abs(green_book._final_rate - 0.01) < TOLERANCE
 
     def test_rates(self, green_book):
         assert abs(green_book.rate(-10)) < TOLERANCE
