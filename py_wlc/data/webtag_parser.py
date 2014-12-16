@@ -20,10 +20,9 @@ class WebTagParser(object):
 
     The class is designed to operate as a context manager if needed.
 
-    Notes:
-      Where possible, the workbook is opened in ``on_demand`` mode, to
-      avoid loading all worksheets at once. :py:meth:`extract_data`
-      will load and unload the appropriate worksheet as required.
+    Where possible, the workbook is opened in ``on_demand`` mode, to
+    avoid loading all worksheets at once. :py:meth:`extract_data` will
+    load and unload the appropriate worksheets as required.
 
     Arguments:
       filename (``str``): The WebTAG Databook file to open.
@@ -44,6 +43,7 @@ class WebTagParser(object):
                  "rail_electricity_price": ("A1.3.7", 27, 1, 7),
                  "rail_fuel_duty": ("A1.3.7", 27, 1, 10),
                  "gdp_growth": ("Annual Parameters", 30, 1, 5)}
+    VERSION = ("Cover", 3, 0)
 
     def __init__(self, filename):
         self.filename = filename
@@ -60,11 +60,11 @@ class WebTagParser(object):
             raise IOError(err_msg)
         if compare != val:
             raise IOError(err_msg)
-        self.version = sheet.cell(3, 0).value
+        self.version = self._extract_version(*self.VERSION)
         self.date = self._extract_date(*self.DATE)
-        self.base_year = self._extract_base(*self.BASE)
+        self.base_year = self._extract_base_year(*self.BASE)
 
-    def _extract_base(self, sheet_name, label_col, base_col, label):
+    def _extract_base_year(self, sheet_name, label_col, base_col, label):
         """Extract the base year from the appropriate worksheet.
 
         Arguments:
@@ -88,9 +88,8 @@ class WebTagParser(object):
     def _extract_date(self, sheet_name, version_col, date_col):
         """Extract the version's date from the appropriate worksheet.
 
-        Notes:
-          Expects that the date will be in the date_col on the same row
-          as the version appears in version_col.
+        Expects that the date will be in the ``date_col`` on the same
+        row as the version appears in ``version_col``.
 
         Arguments:
           date_col (``int``): The column from which to extract the
@@ -111,6 +110,25 @@ class WebTagParser(object):
         self.book.unload_sheet(sheet_name)
         return datetime.date(*date[:3])
 
+    def _extract_version(self, sheet_name, row, col):
+        """Extract the version from the appropriate worksheet.
+
+        Arguments:
+          sheet_name (``str``): The worksheet from which to extract
+            the version.
+          row (``int``): The row in which to find the version.
+          col (``int``): The column in which to find the version.
+            year.
+
+        Returns:
+          ``str``: The version of the workbook.
+
+        """
+        sheet = self.book.sheet_by_name(sheet_name)
+        version = sheet.cell(row, col).value
+        self.book.unload_sheet(sheet_name)
+        return version
+
     def __enter__(self):
         return self
 
@@ -118,11 +136,21 @@ class WebTagParser(object):
         self.book.release_resources()
 
     def close(self):
-        """Close the file release the :py:attr:`book` resources."""
+        """Release the :py:attr:`book` resources."""
         self.__exit__()
 
     def extract_all(self, verbose=False):
-        """Extract all data from ``LOCATIONS`` and useful metadata."""
+        """Extract all data from ``LOCATIONS`` and useful metadata.
+
+        Arguments:
+          verbose (``bool``, optional): Whether to report progress.
+            Implemented primarily for :py:func:`cli` usage. Defaults
+            to ``False``.
+
+        Returns:
+          dict: The data extracted from the :py:attr:`book`.
+
+        """
         data = {}
         for name in self.LOCATIONS:
             if verbose:
@@ -136,10 +164,24 @@ class WebTagParser(object):
         data["base_year"] = self.base_year
         return data
 
-    def extract_data(self, sheet_name, start_row, label_col, value_col):
-        """Extract data from the specified worksheet."""
+    def extract_data(self, sheet_name, start_row, key_col, value_col):
+        """Extract data from the specified worksheet.
+
+        Assumes that cell ``A3`` contains the worksheet title and that
+        cell ``A4`` contains the table name.
+
+        Arguments:
+          sheet_name (``str``): The name of the worksheet.
+          start_row (``int``): The first row to extract data from.
+          key_col (``int``): The column to extract keys from.
+          value_col (``int``): The column to extract values from.
+
+        Returns:
+          dict: The extracted data
+
+        """
         sheet = self.book.sheet_by_name(sheet_name)
-        labels = sheet.col_values(label_col)[start_row:]
+        labels = sheet.col_values(key_col)[start_row:]
         values = sheet.col_values(value_col)[start_row:]
         try:
             data = {int(k): v for k, v in zip(labels, values) if k}
@@ -151,7 +193,19 @@ class WebTagParser(object):
         return data
 
     def extract_named_data(self, name):
-        """Extract a named data series from ``LOCATIONS``."""
+        """Extract a named data series from ``LOCATIONS``.
+
+        Arguments:
+          name (``str``): The name of the data series (must be in
+            :py:attr:`Locations`).
+
+        Returns:
+          dict: The extracted data series.
+
+        Raises:
+          KeyError: If ``name`` is not in :py:attr:`Locations`.
+
+        """
         return self.extract_data(*self.LOCATIONS[name])
 
 
@@ -189,9 +243,8 @@ def parse_args(args):
 def cli(args):
     """Provide a CLI for the :py:class:`~.WebTagParser`.
 
-    Notes:
-      Will either output to a specified file (with optional verbose
-      reporting) or dump the JSON data to ``stdout``.
+    Will either output to a specified file (with optional verbose
+    reporting) or dump the JSON data to ``stdout``.
 
     Arguments:
       args (``argparse.Namespace``): The parsed command line arguments.
