@@ -111,7 +111,7 @@ class IndexSeries(object):
 
         """
         try:
-            self.__getitem__(year)
+            return self.__getitem__(year)
         except KeyError:
             return default
 

@@ -25,6 +25,7 @@ class TestStandardDiscount:
                    2030: 0.5026, 2050: 0.2651, 2135: 0.0274}
         for year, fact in factors.items():
             assert abs(green_book[year] - fact) < TOLERANCE
+        assert abs(green_book.get(year) - fact) < TOLERANCE
 
     def test_parent_magic_methods(self, green_book):
         book_two = Discount(2010)
