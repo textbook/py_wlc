@@ -88,5 +88,11 @@ class TestMethods:
         cost1 = Cost(100, Cost.NOMINAL, 2011, discount, deflator, 1.19)
         cost2 = Cost(100, Cost.NOMINAL, 2011, discount, deflator, 1)
         with pytest.raises(TypeError):
-            _ = cost2 > cost1
+            cost2 > cost1
+        with pytest.raises(TypeError):
+            cost2 < cost1
+        with pytest.raises(TypeError):
+            cost2 <= cost1
+        with pytest.raises(TypeError):
+            cost2 >= cost1
         assert cost1 != cost2
