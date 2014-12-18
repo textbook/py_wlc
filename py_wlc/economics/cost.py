@@ -1,7 +1,10 @@
 """Representation of cost objects in various bases and forms."""
 from __future__ import division
 
+from functools import total_ordering
 
+
+@total_ordering
 class Cost(object):
     """Represents costs and holds data for type conversions.
 
@@ -89,18 +92,6 @@ class Cost(object):
                 return False
         return True
 
-    def __ge__(self, other):
-        lt_ = self.__lt__(other)
-        if lt_ is NotImplemented:
-            return NotImplemented
-        return self.__eq__(other) or not lt_
-
-    def __gt__(self, other):
-        lt_ = self.__lt__(other)
-        if lt_ is NotImplemented:
-            return NotImplemented
-        return not self.__eq__(other) and not lt_
-
     def __hash__(self):
         out = 0
         for attr in ("value", "year", "discount_factor",
@@ -108,21 +99,12 @@ class Cost(object):
             out ^= hash(getattr(self, attr))
         return out
 
-    def __le__(self, other):
-        lt_ = self.__lt__(other)
-        if lt_ is NotImplemented:
-            return NotImplemented
-        return lt_ or self.__eq__(other)
-
     def __lt__(self, other):
         for attr in ("year", "discount_factor", "deflation_factor",
                      "adjustment_factor"):
             if getattr(self, attr) != getattr(other, attr):
-                return NotImplemented
+                raise TypeError("Invalid comparison")
         return self.value < other.value
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @property
     def present_value(self):
