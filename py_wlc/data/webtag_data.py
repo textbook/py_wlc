@@ -4,13 +4,13 @@ import json
 import logging
 from os import path, walk
 
-from ..economics import Discount
+from ..economics import Discount, GdpDeflator
 
 
 logger = logging.getLogger(__name__)
 
 
-class WebTagData(object):
+class WebTagData:
     """Holds the data extracted from WebTAG."""
 
     def __init__(self, base_year, released, version, source, **data):
@@ -23,10 +23,35 @@ class WebTagData(object):
         self.source = source
         self.discount = self._parse_discount(data.get("discount_rate"),
                                              self.base_year)
+        self.deflator = self._parse_deflator(data.get("gdp_growth"),
+                                             self.base_year)
+
+    @staticmethod
+    def _parse_deflator(data, base_year):
+        """Parse GDP data from WebTAG into :py:class:`~.GdpDeflator`.
+
+        Arguments:
+          data (``dict`` or ``None``): The dictionary of GDP data (or
+            ``None`` - this will produce a :py:class:`~.GdpDeflator`
+            with zero rates).
+          base_year (``int``): The base year for the new
+            :py:class:`~.GdpDeflator` object.
+
+        Returns:
+          :py:class:`~.GdpDeflator`: The new GdpDeflator object.
+
+        """
+        if data is not None:
+            rates = {}
+            for key, val in data.items():
+                if key.isdigit():
+                    rates[int(key)] = float(val)
+            return GdpDeflator(base_year, rates, True)
+        return GdpDeflator(base_year, {base_year: 0.0}, True)
 
     @staticmethod
     def _parse_discount(data, base_year):
-        """Parse the discount data from WebTAG into a ``Discount``.
+        """Parse discount data from WebTAG into :py:class:`~.Discount`.
 
         Assumes that all years will be in dash-separated or space-
         separated format, with the first part being the start year.
@@ -69,9 +94,9 @@ class WebTagData(object):
 
         """
         latest_data = latest_date = None
-        for curdir, _, files in walk(dir_):
+        for curr_dir, _, files in walk(dir_):
             for file in files:
-                with open(path.join(curdir, file)) as file_:
+                with open(path.join(curr_dir, file)) as file_:
                     try:
                         data = json.load(file_)
                     except ValueError:
