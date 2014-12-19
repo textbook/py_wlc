@@ -20,8 +20,7 @@ class TestClassMethods:
         for fail in (Cost.MARKET_PRICE | Cost.FACTOR_COST,
                      Cost.MARKET_PRICE | Cost.RESOURCE_COST,
                      Cost.REAL | Cost.NOMINAL,
-                     Cost.NOMINAL | Cost.PRESENT_VALUE,
-                     Cost.FACTOR_COST | Cost.PRESENT_VALUE):
+                     Cost.NOMINAL | Cost.PRESENT_VALUE):
             with pytest.raises(ValueError):
                 Cost.validate_type(fail)
 
@@ -39,7 +38,7 @@ class TestInitialisation:
 
     def test_simple_init(self, discount, deflator):
         cost = Cost(100, Cost.NOMINAL, 2010, discount, deflator, 1)
-        assert abs(cost.present_value - 100) < TOLERANCE
+        assert abs(cost.as_type(Cost.NOMINAL) - 100) < TOLERANCE
 
     def test_init_fail(self, discount, deflator):
         with pytest.raises(ValueError):
@@ -61,9 +60,7 @@ class TestInitialisation:
 
     def test_present_value(self, discount, deflator):
         cost = Cost(100, Cost.PRESENT_VALUE, 2011, discount, deflator, 1.19)
-        assert abs(cost.as_type(Cost.PRESENT_VALUE) -
-                   cost.present_value) < TOLERANCE
-        assert abs(cost.present_value - 100) < TOLERANCE
+        assert abs(cost.as_type(Cost.PRESENT_VALUE) - 100) < TOLERANCE
 
 
 class TestMethods:
@@ -72,7 +69,9 @@ class TestMethods:
         cost1 = Cost(100, Cost.NOMINAL, 2011, discount, deflator, 1.19)
         cost2 = Cost(119, Cost.MARKET_PRICE, 2011, discount, deflator, 1.19)
         assert cost1 == cost2
-        assert hash(cost1) == hash(cost2)
+        cost1_hash = hash(cost1)
+        assert cost1_hash == hash(cost2)
+        assert hash(cost1) == cost1_hash
         cost3 = Cost(100, Cost.REAL, 2011, discount, deflator, 1.19)
         assert cost1 != cost3
 

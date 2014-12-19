@@ -9,7 +9,8 @@ class Cost:
     The ``type_`` of a cost is necessary for conversion between the
     different types; costs can be provide in real or nominal terms and
     as a factor (or "resource") cost or a market price. Additionally, a
-    cost can be a Present Value (discounted real market price).
+    cost can be a Present Value (discounted real factor cost or market
+    price).
 
     It is essential for an accurate calculation that the appropriate
     cost type is used for conversion to consistent output values.
@@ -24,8 +25,8 @@ class Cost:
 
           Cost(100, Cost.REAL | Cost.FACTOR_COST, ...)
 
-      The exception is :py:attr:`PRESENT_VALUE`, which becomes a real
-      market price once the discounting is factored out.
+      The exception is :py:attr:`PRESENT_VALUE`, which is always a real
+      cost.
 
     Arguments:
       value (``float``): The value of the cost.
@@ -42,7 +43,7 @@ class Cost:
       cost (``float``): The nominal factor cost.
       year (``int``): The year in which the cost is incurred.
       discount_factor (``float``): The factor for conversion to Present
-        Value (from real market prices).
+        Value (from real factor costs or market prices).
       deflation_factor (``float``): The factor for conversion to real
         prices (from nominal prices).
       adjustment_factor (``float``): The factor for conversion to
@@ -69,7 +70,7 @@ class Cost:
     """Real price, in a constant price base year."""
 
     PRESENT_VALUE = 16
-    """Discounted real market price."""
+    """Discounted real costs."""
 
     def __init__(self, value, type_, year, discount,
                  deflator, adjustment_factor):
@@ -80,13 +81,13 @@ class Cost:
         self.adjustment_factor = adjustment_factor
         if type_ & self.PRESENT_VALUE:
             value /= self.discount_factor
-            type_ = self.MARKET_PRICE | self.REAL
+            type_ |= self.REAL
         if type_ & self.REAL:
             value /= self.deflation_factor
-            type_ -= (self.REAL - self.NOMINAL)
         if type_ & self.MARKET_PRICE:
             value /= self.adjustment_factor
         self.value = value
+        self.hash_ = None
 
     def __eq__(self, other):
         for attr in ("value", "year", "discount_factor",
@@ -96,11 +97,13 @@ class Cost:
         return True
 
     def __hash__(self):
-        out = 0
-        for attr in ("value", "year", "discount_factor",
-                     "deflation_factor", "adjustment_factor"):
-            out ^= hash(getattr(self, attr))
-        return out
+        if self.hash_ is None:
+            out = 0
+            for attr in ("value", "year", "discount_factor",
+                         "deflation_factor", "adjustment_factor"):
+                out ^= hash(getattr(self, attr))
+            self.hash_ = out
+        return self.hash_
 
     def __lt__(self, other):
         for attr in ("year", "discount_factor", "deflation_factor",
@@ -108,17 +111,6 @@ class Cost:
             if getattr(self, attr) != getattr(other, attr):
                 return NotImplemented
         return self.value < other.value
-
-    @property
-    def present_value(self):
-        """The Present Value of the :py:class:`Cost` object.
-
-        Returns:
-          float: Present Value (discounted real market price, read-only).
-
-        """
-        return (self.value * self.adjustment_factor *
-                self.deflation_factor * self.discount_factor)
 
     def as_type(self, type_):
         """Convert the nominal factor cost to the specified ``type_``.
@@ -131,9 +123,10 @@ class Cost:
 
         """
         self.validate_type(type_)
-        if type_ & self.PRESENT_VALUE:
-            return self.present_value
         value = self.value
+        if type_ & self.PRESENT_VALUE:
+            value *= self.discount_factor
+            type_ |= self.REAL
         if type_ & self.REAL:
             value *= self.deflation_factor
         if type_ & self.MARKET_PRICE:
@@ -146,7 +139,7 @@ class Cost:
 
         Costs cannot be both market price and factor/resource cost,
         or both nominal and real. Present values are necessarily
-        discounted real market prices.
+        discounted real factor costs or market prices.
 
         Arguments:
           type_ (``int``): The type of the cost.
@@ -161,5 +154,3 @@ class Cost:
             raise ValueError("Cost cannot be real and nominal.")
         if (type_ & cls.NOMINAL) and (type_ & cls.PRESENT_VALUE):
             raise ValueError("Nominal costs cannot be present values.")
-        if (type_ & cls.FACTOR_COST) and (type_ & cls.PRESENT_VALUE):
-            raise ValueError("Factor costs cannot be present values")
