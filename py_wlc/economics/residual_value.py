@@ -1,7 +1,5 @@
 """Calculation methods for residual value of assets."""
 
-from __future__ import division
-
 from ..utils import memo
 
 @memo
@@ -20,7 +18,7 @@ def sum_of_years_digits(year):
     return year + sum_of_years_digits(year-1)
 
 
-class ResidualValueCalculator(object):
+class ResidualValueCalculator:
     """A calculator to generate residual values of assets.
 
     Arguments:
@@ -38,6 +36,7 @@ class ResidualValueCalculator(object):
     METHODS = {"linear": "linear",
                "double-declining": "double_declining",
                "sum of years' digits": "sum_of_years"}
+    """Available methods for calculation of residual value."""
 
     def __init__(self, method):
         if method not in self.METHODS:

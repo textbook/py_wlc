@@ -45,7 +45,7 @@ class ExtendedDict(dict):
 
     def __getitem__(self, key):
         try:
-            return super(ExtendedDict, self).__getitem__(key)
+            return super().__getitem__(key)
         except KeyError:
             if self and key > max(self):
                 return self[max(self)]

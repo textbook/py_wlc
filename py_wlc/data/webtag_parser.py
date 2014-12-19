@@ -5,7 +5,6 @@ This class parses the databook to a more convenient JSON format for
 use by :py:class:`~.WebTagData`.
 
 """
-from __future__ import print_function
 import argparse
 import datetime
 import json
@@ -15,7 +14,7 @@ from sys import argv, stdout
 import xlrd
 
 
-class WebTagParser(object):
+class WebTagParser:
     """Class to handle access to a WebTAG Databook Excel file.
 
     The class is designed to operate as a context manager if needed.
@@ -36,14 +35,23 @@ class WebTagParser(object):
     """
 
     BASE = ("User Parameters", 0, 11, "Price year")
+    """Where to find the base year."""
+
     CHECK = ("Cover", 2, 0, "WebTAG Databook")
+    """Defines the check for a valid WebTAG workbook."""
+
     DATE = ("Audit", 0, 2)
+    """Where to locate the workbook date."""
+
     LOCATIONS = {"discount_rate": ("A1.1.1", 24, 1, 3),
                  "rail_diesel_price": ("A1.3.7", 27, 1, 5),
                  "rail_electricity_price": ("A1.3.7", 27, 1, 7),
                  "rail_fuel_duty": ("A1.3.7", 27, 1, 10),
                  "gdp_growth": ("Annual Parameters", 30, 1, 5)}
+    """Locations of defined data series for extraction."""
+
     VERSION = ("Cover", 3, 0)
+    """Where to locate the workbook version."""
 
     def __init__(self, filename):
         self.filename = filename

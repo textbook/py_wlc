@@ -36,7 +36,8 @@ class PyTest(TestCommand):
 
 setup(author='Jonathan Sharpe',
       author_email='j.r.sharpe@gmail.com',
-      classifiers=['Programming Language :: Python',
+      classifiers=['Programming Language :: Python :: 3.4',
+                   'Programming Language :: Python :: 3 :: Only',
                    'Development Status :: 2 - Pre-Alpha',
                    'Natural Language :: English',
                    'Operating System :: OS Independent',

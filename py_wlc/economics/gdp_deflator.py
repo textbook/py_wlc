@@ -1,6 +1,4 @@
 """Provides conversion between nominal and real prices."""
-from __future__ import division
-
 from ..generic import ExtendedDict, IndexSeries
 
 
@@ -27,7 +25,7 @@ class GdpDeflator(IndexSeries):
         rates = {year-base_year: rate for year, rate in rates.items()}
         if extend:
             rates = ExtendedDict(rates)
-        super(GdpDeflator, self).__init__(base_year, rates, 100.0)
+        super().__init__(base_year, rates, 100.0)
 
     def conversion_factor(self, year_from, year_to=None):
         """Calculate the factor to convert costs between two years.

@@ -30,19 +30,18 @@ class Discount(IndexSeries):
     """
 
     RATES = {0: 0.035, 31: 0.03, 76: 0.025, 126: 0.02, 201: 0.015, 301: 0.01}
+    """Default HM Treasury "Green Book" discount rates."""
 
     def __init__(self, base_year, rates=None, year_zero=None):
         if rates is None:
             rates = self.RATES
         self._infill_rates(rates)
-        super(Discount, self).__init__(base_year,
-                                       ExtendedDict(rates),
-                                       initial_value=1.0,
-                                       year_zero=year_zero)
+        super().__init__(base_year, ExtendedDict(rates),
+                         initial_value=1.0, year_zero=year_zero)
 
     def __getitem__(self, year):
         try:
-            return super(Discount, self).__getitem__(year)
+            return super().__getitem__(year)
         except KeyError:
             return 1.0
 
@@ -71,7 +70,7 @@ class Discount(IndexSeries):
         """
         if year < (self.base_year - self.year_zero):
             return 0.0
-        return super(Discount, self).rate(year)
+        return super().rate(year)
 
     def _extend_values(self, year):
         for year_ in range(max(self._values), year):

@@ -1,11 +1,9 @@
 """Representation of cost objects in various bases and forms."""
-from __future__ import division
-
 from functools import total_ordering
 
 
 @total_ordering
-class Cost(object):
+class Cost:
     """Represents costs and holds data for type conversions.
 
     The ``type_`` of a cost is necessary for conversion between the
@@ -57,14 +55,19 @@ class Cost(object):
 
     FACTOR_COST = 1
     """Factor cost, excluding taxation."""
+
     RESOURCE_COST = 1
     """Synonym of :py:attr:`FACTOR_COST`."""
+
     MARKET_PRICE = 2
     """Market price, including taxation."""
+
     NOMINAL = 4
     """Nominal price, as paid in the year incurred."""
+
     REAL = 8
     """Real price, in a constant price base year."""
+
     PRESENT_VALUE = 16
     """Discounted real market price."""
 
@@ -103,7 +106,7 @@ class Cost(object):
         for attr in ("year", "discount_factor", "deflation_factor",
                      "adjustment_factor"):
             if getattr(self, attr) != getattr(other, attr):
-                raise TypeError("Invalid comparison")
+                return NotImplemented
         return self.value < other.value
 
     @property

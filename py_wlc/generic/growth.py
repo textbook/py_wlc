@@ -1,7 +1,7 @@
 """Generic functionality for modelling growth series."""
 
 
-class IndexSeries(object):
+class IndexSeries:
 
     """Growth rates and factors for indexation series.
 
