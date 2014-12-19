@@ -13,20 +13,20 @@ class TestDeflator:
 
     def test_deflator(self):
         deflator = GdpDeflator(2010, {2009: 0.03, 2010: 0.03, 2011: 0.03})
-        test = {2008: 97.0874, 2009: 97.0874, 2010: 100.0,
-                2011: 103.0, 2012: 106.09, 2013: 106.09}
+        test = {2008: 0.97087, 2009: 0.97087, 2010: 1,
+                2011: 1.03, 2012: 1.0609, 2013: 1.0609}
         for year, val in test.items():
             assert abs(deflator[year] - val) < TOLERANCE
 
     def test_extended_deflator(self, deflator):
-        test = {2007: 91.5142, 2008: 94.2596, 2009: 97.0874,
-                2010: 100.0, 2011: 103.0, 2012: 106.09, 2013: 109.2727}
+        test = {2007: 0.91514, 2008: 0.94260, 2009: 0.97087,
+                2010: 1, 2011: 1.03, 2012: 1.0609, 2013: 1.09273}
         for year, val in test.items():
             assert abs(deflator[year] - val) < TOLERANCE
 
     def test_empty_rates(self):
         deflator = GdpDeflator(2010, {})
-        test = {2009: 100, 2010: 100, 2011: 100}
+        test = {2009: 1, 2010: 1, 2011: 1}
         for year, val in test.items():
             assert abs(deflator[year] - val) < TOLERANCE
 

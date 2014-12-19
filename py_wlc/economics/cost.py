@@ -76,7 +76,7 @@ class Cost:
         self.validate_type(type_)
         self.year = year
         self.discount_factor = discount[year]
-        self.deflation_factor = 100 / deflator[year]
+        self.deflation_factor = 1 / deflator[year]
         self.adjustment_factor = adjustment_factor
         if type_ & self.PRESENT_VALUE:
             value /= self.discount_factor
