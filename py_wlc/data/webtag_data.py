@@ -100,12 +100,11 @@ class WebTagData:
                     try:
                         data = json.load(file_)
                     except ValueError:
-                        pass
-                    else:
-                        date = data.get("released", "")
-                        if latest_date is None or date > latest_date:
-                            latest_data = data
-                            latest_date = date
+                        continue
+                    date = data.get("released", "")
+                    if latest_date is None or date > latest_date:
+                        latest_data = data
+                        latest_date = date
         if latest_data is not None:
             return cls(**latest_data)
 
