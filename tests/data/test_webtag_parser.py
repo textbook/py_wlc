@@ -6,7 +6,7 @@ import pytest
 from py_wlc.data import WebTagParser
 from py_wlc.data.webtag_parser import cli, parse_args
 
-DATA = os.path.join(os.getcwd(), "tests", "data", "test_data")
+DATA = os.path.join(os.path.dirname(__file__), "test_data")
 DATABOOK = os.path.join(DATA, "test_databook.xls")
 TEMPFILE = os.path.join(DATA, "temp.json")
 COMPFILE = os.path.join(DATA, "test_databook.json")
