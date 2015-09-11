@@ -6,7 +6,7 @@ import pytest
 from py_wlc.data import WebTagData
 from py_wlc.economics import Discount
 
-DATA = os.path.join(os.getcwd(), 'tests', 'data', 'test_data')
+DATA = os.path.join(os.path.dirname(__file__), 'test_data')
 
 @pytest.fixture(scope='module')
 def databook():
