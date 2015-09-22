@@ -1,9 +1,10 @@
-Babel==1.3
-Jinja2==2.7.3
+Babel==2.0
+Jinja2==2.8
 MarkupSafe==0.23
 PyYAML==3.11
-Pygments==2.0.1
-Sphinx==1.3b2
+Pygments==2.0.2
+Sphinx==1.3.1
+alabaster==0.7.6
 astroid==1.3.2
 cov-core==1.15.0
 coverage==3.7.1
@@ -14,9 +15,9 @@ py==1.4.26
 pylint==1.4.0
 pytest==2.6.4
 pytest-cov==1.8.1
-pytz==2014.10
+pytz==2015.6
 requests==2.5.0
-six==1.8.0
+six==1.9.0
 snowballstemmer==1.2.0
-sphinx-rtd-theme==0.1.6
+sphinx-rtd-theme==0.1.9
 xlrd==0.9.3
