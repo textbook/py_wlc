@@ -11,6 +11,7 @@ Automated Bragging
 [![Documentation Status](https://readthedocs.org/projects/py-wlc/badge/?version=latest)](https://readthedocs.org/projects/py-wlc/?badge=latest) 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/textbook/py_wlc/blob/develop/LICENSE)
 [![Code Issues](https://www.quantifiedcode.com/api/v1/project/5b90fc6b09754d24aace2630117e7c8a/badge.svg)](https://www.quantifiedcode.com/app/project/5b90fc6b09754d24aace2630117e7c8a)
+[![Code Health](https://landscape.io/github/textbook/py_wlc/develop/landscape.svg?style=flat)](https://landscape.io/github/textbook/py_wlc/develop)
    
 Documentation
 -------------
